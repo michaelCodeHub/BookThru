@@ -1,0 +1,11 @@
+﻿@model IEnumerable<BookThru.Models.ChatDetails>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<form  asp-action="SendMessage" method="post" >
+    <input type="text" name="Message"/>
+    <input type="submit" value="Send" name="Submit"/>
+</form>

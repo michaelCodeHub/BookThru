@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using BookThru.Areas.Identity.Data;
+using BookThru.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +41,8 @@ namespace BookThru.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
+            [EmailAddress()]
+            [RegularExpression(@".*my.centennialcollege.ca$", ErrorMessage ="Please enter a valid centennial id")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 

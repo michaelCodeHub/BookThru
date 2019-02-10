@@ -1,5 +1,5 @@
 ﻿using System;
-using BookThru.Areas.Identity.Data;
+using BookThru.Data;
 using BookThru.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
