@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BookThru.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using BookThru.Models;
 
 namespace BookThru.Models
 {
@@ -14,7 +15,10 @@ namespace BookThru.Models
             : base(options)
         {
         }
+        
 
-        public DbSet<BookThru.Models.ChatDetails> ChatDetails { get; set; }
+        public DbSet<BookThru.Models.Book> Book { get; set; }
+        public DbSet<BookThru.Models.Category> Category { get; set; }
+        public DbSet<BookThru.Models.CourseCode> CourseCode { get; set; }
     }
 }

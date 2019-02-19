@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using BookThru.Models;
+using BookThru.Data;
 
 namespace BookThru
 {
@@ -38,6 +39,8 @@ namespace BookThru
 
             services.AddDbContext<BookThruContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("BookThruContext")));
+            services.AddDefaultIdentity<BookThruUser>()
+                   .AddEntityFrameworkStores<BookThruContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +66,7 @@ namespace BookThru
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=ChatDetails}/{action=Index}/{id?}");
+                    template: "{controller=Books}/{action=Index}/{id?}");
             });
         }
     }

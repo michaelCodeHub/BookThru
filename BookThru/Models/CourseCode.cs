@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace BookThru.Models
 {
-    public class Chat
+    public class CourseCode
     {
-        public int ChatId { get; set; }
-        List<ChatDetails> Chats { get; set; }
+        public int CourseCodeId { get; set; }
+        public string Code { get; set; }
     }
 }
