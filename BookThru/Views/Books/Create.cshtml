@@ -1,64 +1,112 @@
-﻿@model BookThru.Models.Book
+﻿@model BookThru.Models.CreateModel
 
 @{
     ViewData["Title"] = "Create";
+
+    var categories = new List<SelectListItem>
+    ();
+
+    foreach (var item in Model.Categories)
+    {
+        categories.Add(new SelectListItem { Text = item.Title, Value = item.CategoryId + "" });
+    }
+
+    var coursecodes = new List<SelectListItem>
+    ();
+
+    foreach (var item in Model.CourseCodes)
+    {
+        coursecodes.Add(new SelectListItem { Text = item.Code, Value = item.CourseCodeId + "" });
+    }
 }
 
-<h2>Create</h2>
+<div style="padding:50px;">
+    <h2 style="text-align:center">ADD NEW BOOK</h2>
+    <hr />
 
-<h4>Book</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <input asp-for="CategoryId" class="form-control" />
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CourseCodeId" class="control-label"></label>
-                <input asp-for="CourseCodeId" class="form-control" />
-                <span asp-validation-for="CourseCodeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Editon" class="control-label"></label>
-                <input asp-for="Editon" class="form-control" />
-                <span asp-validation-for="Editon" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MinimumBidPrice" class="control-label"></label>
-                <input asp-for="MinimumBidPrice" class="form-control" />
-                <span asp-validation-for="MinimumBidPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyNowPrice" class="control-label"></label>
-                <input asp-for="BuyNowPrice" class="form-control" />
-                <span asp-validation-for="BuyNowPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Uploaded" class="control-label"></label>
-                <input asp-for="Uploaded" class="form-control" />
-                <span asp-validation-for="Uploaded" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+    <div class="container create">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div class="row justify-content-center">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label LightText">Select a Image</label>
+                        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" id="blah"
+                             class="avatar rounded-circle img-responsive" alt="avatar"
+                             style="display:block; width:300px; height:auto;">
+                        <br />
+                        <input type="file" name="imageFile" accept="image/*" value="Browse Image" onchange="readURL(this);" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Book.Name" class="control-label"></label>
+                        <input asp-for="Book.Name" class="form-control inputField" />
+                        <span asp-validation-for="Book.Name" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label class="control-label">Category</label>
+                            @Html.DropDownListFor(x => Model.Book.CategoryId, new SelectList(categories
+                            , "Value", "Text"), htmlAttributes: new { @class = "form-control inputField", id = "Category" })
+                            <span asp-validation-for="Book.CategoryId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label class="control-label">Course Code</label>
+                            @Html.DropDownListFor(x => Model.Book.CourseCodeId, new SelectList(coursecodes
+                            , "Value", "Text"), htmlAttributes: new { @class = "form-control inputField", id = "Category" })
+                            <span asp-validation-for="Book.CourseCodeId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.Editon" class="control-label"></label>
+                        <input asp-for="Book.Editon" class="form-control inputField" />
+                        <span asp-validation-for="Book.Editon" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.Description" class="control-label"></label>
+                        <textarea asp-for="Book.Description" class="form-control inputField"></textarea>
+                        <span asp-validation-for="Book.Description" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label asp-for="Book.MinimumBidPrice" class="control-label"></label>
+                            <input asp-for="Book.MinimumBidPrice" class="form-control inputField" />
+                            <span asp-validation-for="Book.MinimumBidPrice" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label asp-for="Book.BuyNowPrice" class="control-label"></label>
+                            <input asp-for="Book.BuyNowPrice" class="form-control inputField" />
+                            <span asp-validation-for="Book.BuyNowPrice" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+
+                <div class="col-md-2"></div>
             </div>
         </form>
+
     </div>
 </div>
 
+<script>
+	function readURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+
+			reader.onload = function (e) {
+				$('#blah')
+					.attr('src', e.target.result);
+			};
+
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+</script>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

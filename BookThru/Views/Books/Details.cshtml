@@ -2,65 +2,68 @@
 
 @{
     ViewData["Title"] = "Details";
+
+    Model.ImageURL = "https://s3.amazonaws.com/wehire/" + Model.ImageURL;
+
+    var expiryDate = Model.Uploaded.AddDays(7);
 }
 
-<h2>Details</h2>
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
 
-<div>
-    <h4>Book</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CategoryId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CategoryId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CourseCodeId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CourseCodeId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Editon)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Editon)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.MinimumBidPrice)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.MinimumBidPrice)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.BuyNowPrice)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.BuyNowPrice)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Uploaded)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Uploaded)
-        </dd>
-    </dl>
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" style="height:200px;">
+        <div class="item active">
+            <img src="~/images/slider1.jpg" alt="" class="">
+        </div>
+
+        <div class="item">
+            <img src="~/images/slider2.jpg" alt="">
+        </div>
+
+        <div class="item">
+            <img src="~/images/slider3.jpg" alt="">
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.BookId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="container">
+
+    <div class="searchBoxDiv">
+        <input class="searchBox" type="text" style="width:100%;" placeholder="Search a Book" />
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <img class="img-responsive" src="@Model.ImageURL" style="width:100%"/>
+        </div>
+        <div class="col-md-6">
+            <h3>@Model.Name - @Model.Editon Edition</h3>
+            <p>@Model.Category.Title | @Model.CourseCode.Code</p>
+            <p>Uploaded on : @Model.Uploaded</p>
+            <p><b>Description:</b></p>
+            <p>@Model.Description</p>
+            <p>Current Bid : $@Model.MinimumBidPrice</p>
+            <p>Buy Now : $@Model.BuyNowPrice</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                        <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BID</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                        <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BUY</p>
+                    </div>
+                </div>
+            </div>
+            <p>Bid closes on : @expiryDate</p>
+        </div>
+    </div>
+
 </div>

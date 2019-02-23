@@ -48,19 +48,29 @@ namespace BookThru.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChatDetails",
+                name: "Category",
                 columns: table => new
                 {
-                    ChatDetailsId = table.Column<int>(nullable: false)
+                    CategoryId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserEmail = table.Column<string>(nullable: true),
-                    ChatTime = table.Column<DateTime>(nullable: false),
-                    Message = table.Column<string>(nullable: true),
-                    Status = table.Column<int>(nullable: false)
+                    Title = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChatDetails", x => x.ChatDetailsId);
+                    table.PrimaryKey("PK_Category", x => x.CategoryId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CourseCode",
+                columns: table => new
+                {
+                    CourseCodeId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Code = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseCode", x => x.CourseCodeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -169,6 +179,46 @@ namespace BookThru.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Book",
+                columns: table => new
+                {
+                    BookId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: true),
+                    ImageURL = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    CategoryId = table.Column<int>(nullable: false),
+                    CourseCodeId = table.Column<int>(nullable: false),
+                    Editon = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    MinimumBidPrice = table.Column<int>(nullable: false),
+                    BuyNowPrice = table.Column<int>(nullable: false),
+                    Uploaded = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Book", x => x.BookId);
+                    table.ForeignKey(
+                        name: "FK_Book_Category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Category",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Book_CourseCode_CourseCodeId",
+                        column: x => x.CourseCodeId,
+                        principalTable: "CourseCode",
+                        principalColumn: "CourseCodeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Book_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -207,6 +257,21 @@ namespace BookThru.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Book_CategoryId",
+                table: "Book",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Book_CourseCodeId",
+                table: "Book",
+                column: "CourseCodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Book_Id",
+                table: "Book",
+                column: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -227,10 +292,16 @@ namespace BookThru.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ChatDetails");
+                name: "Book");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Category");
+
+            migrationBuilder.DropTable(
+                name: "CourseCode");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

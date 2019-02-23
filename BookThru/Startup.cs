@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using BookThru.Models;
 using BookThru.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using CourseMedic.Areas.Identity.Services;
 
 namespace BookThru
 {
@@ -39,8 +41,10 @@ namespace BookThru
 
             services.AddDbContext<BookThruContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("BookThruContext")));
-            services.AddDefaultIdentity<BookThruUser>()
-                   .AddEntityFrameworkStores<BookThruContext>();
+
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

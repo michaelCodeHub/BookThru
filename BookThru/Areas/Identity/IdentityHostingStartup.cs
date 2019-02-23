@@ -15,14 +15,14 @@ namespace BookThru.Areas.Identity
     {
         public void Configure(IWebHostBuilder builder)
         {
-            //builder.ConfigureServices((context, services) => {
-            //    services.AddDbContext<BookThruContext>(options =>
-            //        options.UseSqlServer(
-            //            context.Configuration.GetConnectionString("BookThruContextConnection")));
-
-            //    services.AddDefaultIdentity<BookThruUser>()
-            //        .AddEntityFrameworkStores<BookThruContext>();
-            //});
+            builder.ConfigureServices((context, services) =>
+            {
+                services.AddDefaultIdentity<BookThruUser>(config =>
+                {
+                    config.SignIn.RequireConfirmedEmail = true;
+                })
+                    .AddEntityFrameworkStores<BookThruContext>();
+            });
         }
     }
 }

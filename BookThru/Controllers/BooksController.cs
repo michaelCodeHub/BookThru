@@ -6,11 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookThru.Models;
+using Amazon.S3;
+using Amazon;
+using Amazon.S3.Transfer;
 
 namespace BookThru.Controllers
 {
     public class BooksController : Controller
     {
+        private const string bucketName = "wehire";
+        private const string IAMUserKey = "AKIAI27NEVOTDANXC7YQ";
+        private const string IAMUserPass = "5eOsHBc7Y1CLuEB6+YMLuuNB/Daf+KHGXOT3PMkI";
+
         private readonly BookThruContext _context;
 
         public BooksController(BookThruContext context)
@@ -34,6 +41,9 @@ namespace BookThru.Controllers
 
             var book = await _context.Book
                 .FirstOrDefaultAsync(m => m.BookId == id);
+            book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
+            book.Category = _context.Category.Where(cat => cat.CategoryId == book.CategoryId).FirstOrDefault();
+            book.CourseCode = _context.CourseCode.Where(course => course.CourseCodeId == book.CourseCodeId).FirstOrDefault();
             if (book == null)
             {
                 return NotFound();
@@ -45,7 +55,14 @@ namespace BookThru.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            return View();
+
+
+            CreateModel model = new CreateModel {
+                Categories = _context.Category.ToList(),
+                CourseCodes = _context.CourseCode.ToList()
+            };
+
+            return View(model);
         }
 
         // POST: Books/Create
@@ -53,11 +70,25 @@ namespace BookThru.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookId,Name,CategoryId,CourseCode,Editon,Description,MinimumBidPrice,BuyNowPrice,Uploaded")] Book book)
+        public async Task<IActionResult> Create([Bind("Book,Categories,CourseCodes")] CreateModel createModel)
         {
+            var book = createModel.Book;
             if (ModelState.IsValid)
             {
+                if (this.Request.Form.Files.Count < 1 || this.Request.Form.Files[0].Length < 1) throw new Exception("Please include a image file to upload.");
+                var file = this.Request.Form.Files[0];
+                Random rnd = new Random();
+                book.ImageURL = rnd.Next(99999999).ToString() + "." + file.ContentType.Substring(file.ContentType.Length - 3);
+                book.User = _context.Users.Where(user=>user.Email == User.Identity.Name).FirstOrDefault();
+                book.Category = _context.Category.Where(cat=> cat.CategoryId== book.CategoryId).FirstOrDefault();
+                book.CourseCode = _context.CourseCode.Where(course => course.CourseCodeId== book.CourseCodeId).FirstOrDefault();
+                book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
+                book.Uploaded = DateTime.Now.Date;
+                await UploadFileAsync(file.OpenReadStream(), book.ImageURL);
+
+
                 _context.Add(book);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -73,6 +104,9 @@ namespace BookThru.Controllers
             }
 
             var book = await _context.Book.FindAsync(id);
+            book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
+            book.Category = _context.Category.Where(cat => cat.CategoryId == book.CategoryId).FirstOrDefault();
+            book.CourseCode = _context.CourseCode.Where(course => course.CourseCodeId == book.CourseCodeId).FirstOrDefault();
             if (book == null)
             {
                 return NotFound();
@@ -125,6 +159,9 @@ namespace BookThru.Controllers
 
             var book = await _context.Book
                 .FirstOrDefaultAsync(m => m.BookId == id);
+            book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
+            book.Category = _context.Category.Where(cat => cat.CategoryId == book.CategoryId).FirstOrDefault();
+            book.CourseCode = _context.CourseCode.Where(course => course.CourseCodeId == book.CourseCodeId).FirstOrDefault();
             if (book == null)
             {
                 return NotFound();
@@ -148,5 +185,49 @@ namespace BookThru.Controllers
         {
             return _context.Book.Any(e => e.BookId == id);
         }
+
+        private static async Task UploadFileAsync(System.IO.Stream fileStream, String imageName)
+        {
+            try
+            {
+
+                var amazonS3Config = new AmazonS3Config();
+                amazonS3Config.RegionEndpoint = RegionEndpoint.USEast1;// use your region endpoint
+                IAmazonS3 s3Client = new AmazonS3Client(IAMUserKey, IAMUserPass, amazonS3Config);
+                var fileTransferUtility = new TransferUtility(s3Client);
+
+                var uploadRequest =
+                    new TransferUtilityUploadRequest
+                    {
+                        BucketName = bucketName,
+                        InputStream = fileStream,
+                        Key = imageName,
+                        CannedACL = S3CannedACL.PublicRead
+                    };
+
+                uploadRequest.UploadProgressEvent +=
+                    new EventHandler<UploadProgressArgs>
+                        (uploadRequest_UploadPartProgressEvent);
+
+                await fileTransferUtility.UploadAsync(uploadRequest);
+
+            }
+            catch (AmazonS3Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Error encountered on server. Message:'{0}' when writing an object" + e.Message, e.Message);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Error encountered on server. Message:'{0}' when writing an object" + e.Message, e.Message);
+            }
+        }
+
+        static void uploadRequest_UploadPartProgressEvent(object sender, UploadProgressArgs e)
+        {
+            // Process event.
+            System.Diagnostics.Debug.WriteLine("{0}/{1}", e.TransferredBytes, e.TotalBytes);
+        }
+
     }
+
 }

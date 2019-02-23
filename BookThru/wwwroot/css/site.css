@@ -35,3 +35,71 @@ body {
         display: none;
     }
 }
+
+.carousel-inner{
+    height:350px;
+}
+
+
+@media screen and (max-width: 767px) {
+
+    .carousel-inner {
+        height: 150px;
+    }
+}
+
+.carousel-inner img {
+    position: absolute;
+    margin: auto;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+
+.imageOuter {
+    height: 250px;
+    margin: 10px auto;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.imageInner {
+    height: auto;
+    width: 100%;
+}
+
+.detailsOuter {
+    margin: 10px auto;
+}
+
+.bookItem {
+    width: 90%;
+    margin: 0px auto;
+    padding: 20px;
+    box-shadow: 0 7px 14px rgba(0,0,0,0.10);
+    transition: transform .2s;
+}
+
+.bookItem:hover {
+    /*transform: scale(1.1);*/
+}
+
+.btn-home {
+    transition: transform .2s;
+}
+
+.btn-home:hover {
+    transform: scale(1.1);
+}
+
+.searchBoxDiv {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.searchBox{
+    height:40px;
+    border-radius:2px;
+    border-color:aqua;
+    padding:10px;
+}

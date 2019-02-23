@@ -2,76 +2,78 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    foreach(var item in Model)
+    {
+        item.ImageURL = "https://s3.amazonaws.com/wehire/" + item.ImageURL;
+    }
 }
 
-<h2>Index</h2>
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourseCodeId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Editon)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MinimumBidPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BuyNowPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Uploaded)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourseCodeId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Editon)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MinimumBidPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BuyNowPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Uploaded)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BookId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+        <div class="item active">
+            <img src="~/images/slider1.jpg" alt="" class="">
+        </div>
+
+        <div class="item">
+            <img src="~/images/slider2.jpg" alt="">
+        </div>
+
+        <div class="item">
+            <img src="~/images/slider3.jpg" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="searchBoxDiv">
+        <input class="searchBox" type="text" style="width:100%;" placeholder="Search a Book"/>
+    </div>
+
+    <div class="row">
+        <div class="row justify-content-center">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4" style="padding:10px;">
+                    <div class="bookItem">
+                        <div class="imageOuter">
+                            <img src="@item.ImageURL" class="imageInner" />
+                        </div>
+                        <div class="detailsOuter">
+                            <p><a asp-action="Details"  asp-route-id="@item.BookId">@item.Name</a></p>
+                            <br />
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <a href="#" class="btn btn-primary btn-home" style="width:100%">Bid Now $@item.MinimumBidPrice </a>
+                                </div>
+                                <div class="col-lg-6">
+                                    <a href="#" class="btn btn-primary btn-home" style="width:100%">Buy Now $@item.BuyNowPrice</a>
+                                </div>
+                            </div>
+                            @*<div class="row">
+                                <p class="col-md-6"> </p>
+                                <span class="col-md-2" style="text-align:right">$@item.MinimumBidPrice</span>
+                                <a class="col-md-4" href="#" style="text-align:right">BID</a>
+                            </div>
+                            <div class="row">
+                                <p class="col-md-6">Buy Now</p>
+                                <span class="col-md-2" style="text-align:right">$@item.BuyNowPrice</span>
+                                <a class="col-md-4" href="#" style="text-align:right">BUY</a>
+                            </div>*@
+                        </div>
+                    </div>
+                        
+                </div>
+            }
+        </div>
+    </div>
+</div>
