@@ -231,6 +231,12 @@ namespace BookThru.Controllers
 
         public async Task<IActionResult> MakeBid(int BookId, int Amount)
         {
+
+            if (!User.IsInRole("User"))
+			{
+				return LocalRedirect("/Identity/Account/Login");
+			}
+
             var book = await _context.Book.FindAsync(BookId);
 
             if(book.MinimumBidPrice > Amount)

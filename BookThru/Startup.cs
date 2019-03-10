@@ -14,6 +14,7 @@ using BookThru.Models;
 using BookThru.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using CourseMedic.Areas.Identity.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookThru
 {
@@ -36,6 +37,16 @@ namespace BookThru
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            var dataProtectionProviderType = typeof(DataProtectorTokenProvider<BookThruUser>);
+
+
+            services.AddIdentity<BookThruUser, IdentityRole>(config =>
+            {
+                config.SignIn.RequireConfirmedEmail = true;
+            })
+                .AddEntityFrameworkStores<BookThruContext>()
+            .AddTokenProvider(TokenOptions.DefaultProvider, dataProtectionProviderType);
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -45,10 +56,15 @@ namespace BookThru
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            services.AddScoped<RoleManager<IdentityRole>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider services,
+            BookThruContext dbContext,
+  RoleManager<IdentityRole> roleManager,
+  UserManager<BookThruUser> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +88,38 @@ namespace BookThru
                     name: "default",
                     template: "{controller=Books}/{action=Index}/{id?}");
             });
+            CreateUserRoles(dbContext, roleManager, userManager).Wait();
+        }
+
+        private async Task CreateUserRoles(BookThruContext dbContext, RoleManager<IdentityRole> RoleManager, UserManager<BookThruUser> UserManager)
+        {
+            dbContext.Database.EnsureCreated();
+            //initializing custom roles 
+            string[] roleNames = { "Admin", "User" };
+            IdentityResult roleResult;
+            //Create Role if None
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    //create the roles and seed them to the database: Question 1
+                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+            //Assign Admin Role To Micheal
+            BookThruUser michaeljaison = await UserManager.FindByEmailAsync("michaeljaison.me@gmail.com");
+            if (michaeljaison == null)
+            {
+                michaeljaison = new BookThruUser()
+                {
+                    UserName = "michaeljaison",
+                    Email = "michaeljaison.me@gmail.com",
+                };
+                await UserManager.CreateAsync(michaeljaison, "P@ssw0rd");
+            }
+            await UserManager.AddToRoleAsync(michaeljaison, "Admin");
+           
         }
     }
 }
