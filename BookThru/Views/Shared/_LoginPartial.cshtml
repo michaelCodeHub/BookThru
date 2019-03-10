@@ -6,18 +6,39 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li><a asp-controller="Books" asp-action="Create">Add a Book</a></li>
+        <ul>
+            <li class="menu-item-has-children"><a asp-controller="Books" asp-action="Create">Add a Book</a></li>
             <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
+                <button type="submit" class="acountsec">Logout</button>
             </li>
         </ul>
     </form>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
-        <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+    <ul>
+        <li class="menu-item-has-children"><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+        <li class="menu-item-has-children"><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
     </ul>
 }
+
+
+
+@*  <ul>
+                        <li class="menu-item-has-children">
+                            <a href="#" title="">Home</a>
+
+                        </li>
+
+        <ul>
+        <li class="searchopen"><a href="#" title=""><i class="la la-search"></i></a></li>
+        <li class="acountopen">
+            <a href="#" title=""><i class="la la-lock"></i></a>
+            <ul>
+                <li><a href="login.html" title="">Login</a></li>
+                <li><a href="register.html" title="">Register</a></li>
+            </ul>
+        </li>
+        <li><a href="whishlist.html" title=""><i class="la la-heart-o"></i><span>1</span></a></li>
+        <li class="cartopen"><a href="#" title=""><i class="la la-shopping-cart"></i><span>2</span></a></li>
+    </ul>*@

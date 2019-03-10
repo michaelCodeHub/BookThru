@@ -1,17 +1,88 @@
 ﻿@{
     ViewData["Title"] = "Contact";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+<section>
+    <div class="block">
+        <div data-velocity="-.1" style="background: url(https://blackwell.ca/blackwell/wp-content/uploads/2012/10/CentennialCollege_2.jpg) repeat scroll 50% 0px transparent;" class="parallax light layer blackish  scrolly-invisible no-repeat"></div><!-- PARALLAX BACKGROUND IMAGE -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="innerhead">
+                        <h2>CONTACT US</h2>
+                        <ul class="breadcrumbs">
+                            <li><a href="#" title="">Home</a></li>
+                            <li><a href="#" title="">Pages</a></li>
+                            <li><a href="#" title="">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<address>
-    <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+<section>
+    <div class="block">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 column">
+                    <div class="contactinfo">
+                        <h3>Contact Us</h3>
+                        <span>Adress: 941, Progress Ave, Toronto ON</span>
+                        <span>Email: info@bookthru.ca</span>
+                        <span>Call directly:</span>
+                        <strong>+1 - 416 - 123 - 4567</strong>
+                        <div class="social">
+                            <span>Connect to</span>
+                            <a href="#" title=""><i class="ti ti-facebook"></i></a>
+                            <a href="#" title=""><i class="ti ti-twitter"></i></a>
+                            <a href="#" title=""><i class="ti ti-pinterest"></i></a>
+                            <a href="#" title=""><i class="ti ti-linkedin"></i></a>
+                            <a href="#" title=""><i class="ti ti-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="contactmap">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11521.57673585523!2d-79.226459!3d43.785433!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x46e3fe92c0cd2b18!2sCentennial+College+-+Progress+Campus!5e0!3m2!1sen!2sca!4v1552250654385" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="block remove-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="contactform" id="contact">
+                        <h3>Keep in touch with us</h3>
+                        <div id="message"></div>
+                        <form method="post" action="contact.php" name="contactform" id="contactform">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <input name="name" type="text" id="name" placeholder="Name" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <input name="email" type="text" id="email" placeholder="Email" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <input type="text" placeholder="Website" />
+                                </div>
+                                <div class="col-lg-12">
+                                    <textarea name="comments" id="comments" placeholder="Message"></textarea>
+                                </div>
+                                <div class="col-lg-12">
+                                    <input type="submit" class="submit theme-btn" id="submit" value="Send messages" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
