@@ -5,38 +5,118 @@
 }
 
 <h4>@ViewData["Title"]</h4>
-@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+@*@Html.Partial("_StatusMessage", Model.StatusMessage)*@
+
 <div class="row">
     <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" disabled />
+
+        <form class="form container" id="profile-form" method="post" enctype="multipart/form-data">
+            <div class="row justify-content-center">
+                <div class="col-lg-4 justify-content-center">
+                    @if (Model.Input.UserInfo != null)
+                    {
+                        @if (!Model.Input.UserInfo.PictureUrl.Equals(""))
+                        {
+                            <img src="@Model.Input.UserInfo.PictureUrl" id="blah" class="avatar rounded-circle img-thumbnail" alt="avatar" style="display:block;margin:auto; width:200px; height:200px;">
+                            <br />
+                        }
+                        else
+                        {
+                            <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" id="blah" class="avatar rounded-circle img-thumbnail" alt="avatar" style="display:block;margin:auto; width:200px; height:200px;">
+                            <br />
+                        }
+                        <label for="image-upload" class="custom-file-upload">
+                            <i class="fa fa-image"></i> Upload Image
+                        </label>
+                        <input id="image-upload" asp-for="Input.UserInfo.PictureUrl" type="file" name="imageFile" accept="image/*" placeholder="Choose Image.." value="imageFile" style="margin:auto;" onchange="readURL(this);" />
+                    }
+                    else
+                    {
+                        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" id="blah" class="avatar rounded-circle img-thumbnail" alt="avatar" style="display:block;margin:auto; width:200px; height:200px;">
+                        <br />
+                        <label for="image-upload" class="custom-file-upload">
+                            <i class="fa fa-image"></i> Upload Image
+                        </label>
+                        <input id="image-upload" asp-for="Input.UserInfo.PictureUrl" type="file" name="imageFile" accept="image/*" placeholder="Choose Image.." value="imageFile" style="margin:auto;" onchange="readURL(this);" />
+                        <br />
+                        <label for="file-upload" class="custom-file-upload">
+                            <i class="fa fa-cloud-upload"></i> Upload Resume
+                        </label>
+                    }
+
+                    @*<span asp-validation-for="Input.UserInfo.ResumeUrl" class="text-danger"></span>*@
+                    <br />
+
+                </div>
+                <div class="col-lg-6">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="home">
+                            <div class="form-group row">
+                                <div class="col-md-6 m-b-10">
+                                    <h5><label asp-for="Input.UserInfo.FirstName"></label></h5>
+                                    <input asp-for="Input.UserInfo.FirstName" class="form-control" />
+                                    <span asp-validation-for="Input.UserInfo.FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 m-b-10">
+                                    <h5><label asp-for="Input.UserInfo.LastName"></label></h5>
+                                    <input asp-for="Input.UserInfo.LastName" class="form-control" />
+                                    <span asp-validation-for="Input.UserInfo.LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6 m-b-10">
+                                    <h5><label asp-for="Input.Email"></label></h5>
+                                    @if (Model.IsEmailConfirmed)
+                                    {
+                                        <div class="input-group">
+                                            <input disabled asp-for="Input.Email" class="form-control" value="@Model.Input.Email"/>
+                                            <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="Input.Email" class="form-control" />
+                                        <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                                    }
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6  m-b-10">
+                                    <h5><label asp-for="Input.UserInfo.PhoneNumber"></label></h5>
+                                    <input asp-for="Input.UserInfo.PhoneNumber" type="number" placeholder="(999) 999 999" class="form-control" />
+                                    <span asp-validation-for="Input.UserInfo.PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <br>
+                                    <button class="col-md-4 btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                                    <button class="col-md-4 btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+                                </div>
+                            </div>
+
+                        </div><!--/tab-pane-->
+
+                    </div><!--/tab-pane-->
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                @if (Model.IsEmailConfirmed)
-                {
-                    <div class="input-group">
-                        <input asp-for="Input.Email" class="form-control" />
-                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
-                    </div>
-                }
-                else
-                {
-                    <input asp-for="Input.Email" class="form-control" />
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
-                }
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.PhoneNumber"></label>
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-default">Save</button>
         </form>
+        <script>
+				function readURL(input) {
+					if (input.files && input.files[0]) {
+						var reader = new FileReader();
+
+						reader.onload = function (e) {
+							$('#blah')
+								.attr('src', e.target.result);
+						};
+
+						reader.readAsDataURL(input.files[0]);
+					}
+				}
+        </script>
+
+
     </div>
 </div>
 

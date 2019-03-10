@@ -8,5 +8,6 @@ namespace BookThru.Data
 {
     public class BookThruUser : IdentityUser
     {
+
     }
 }

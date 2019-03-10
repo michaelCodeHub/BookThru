@@ -33,5 +33,7 @@ namespace BookThru.Models
         [ForeignKey("Id")]
         public virtual BookThruUser User { get; set; }
 
+        //[NotMapped]
+        public string Message { get; set; }
     }
 }

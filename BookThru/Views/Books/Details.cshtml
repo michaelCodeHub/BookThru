@@ -50,18 +50,23 @@
             <p>@Model.Description</p>
             <p>Current Bid : $@Model.MinimumBidPrice</p>
             <p>Buy Now : $@Model.BuyNowPrice</p>
-            <div class="row">
-                <div class="col-md-6">
-                    <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
-                        <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BID</p>
+            <p style="color:red">@Model.Message</p>
+            <form asp-action="MakeBid">
+                <input type="hidden" asp-for="BookId" />
+                <p><input type="text" placeholder="Type your bid amount" name="Amount" required /></p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                            <input class="btn btn-primary" style="height:100px; width:100%; margin:0px auto;text-align: center;background-color:aqua; vertical-align: middle;display: table-cell; color:white; font-size:30px;" type="submit" value="Bid" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                            <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BUY</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
-                        <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BUY</p>
-                    </div>
-                </div>
-            </div>
+            </form>
             <p>Bid closes on : @expiryDate</p>
         </div>
     </div>

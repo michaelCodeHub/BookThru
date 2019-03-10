@@ -228,6 +228,26 @@ namespace BookThru.Controllers
             System.Diagnostics.Debug.WriteLine("{0}/{1}", e.TransferredBytes, e.TotalBytes);
         }
 
+
+        public async Task<IActionResult> MakeBid(int BookId, int Amount)
+        {
+            var book = await _context.Book.FindAsync(BookId);
+
+            if(book.MinimumBidPrice > Amount)
+            {
+                book.Message =  "Please enter a greater amount";
+            }
+            else
+            {
+                book.MinimumBidPrice = Amount;
+                book.Message = "";
+            }
+            _context.Update(book);
+            _context.SaveChanges();
+
+            return LocalRedirect("/Books/Details/"+BookId);
+        }
+
     }
 
 }

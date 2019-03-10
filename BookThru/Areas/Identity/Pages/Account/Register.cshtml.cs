@@ -42,7 +42,7 @@ namespace BookThru.Areas.Identity.Pages.Account
         {
             [Required]
             [EmailAddress()]
-            [RegularExpression(@".*my.centennialcollege.ca$", ErrorMessage ="Please enter a valid centennial id")]
+            //[RegularExpression(@".*my.centennialcollege.ca$", ErrorMessage ="Please enter a valid centennial id")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 

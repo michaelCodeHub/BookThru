@@ -4,14 +4,16 @@ using BookThru.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookThru.Migrations
 {
     [DbContext(typeof(BookThruContext))]
-    partial class BookThruContextModelSnapshot : ModelSnapshot
+    [Migration("20190309030049_migration2")]
+    partial class migration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,28 +135,6 @@ namespace BookThru.Migrations
                     b.HasKey("CourseCodeId");
 
                     b.ToTable("CourseCode");
-                });
-
-            modelBuilder.Entity("BookThru.Models.UserInfo", b =>
-                {
-                    b.Property<string>("Id");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired();
-
-                    b.Property<string>("PictureUrl");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserInfo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -286,14 +266,6 @@ namespace BookThru.Migrations
                     b.HasOne("BookThru.Data.BookThruUser", "User")
                         .WithMany()
                         .HasForeignKey("Id");
-                });
-
-            modelBuilder.Entity("BookThru.Models.UserInfo", b =>
-                {
-                    b.HasOne("BookThru.Data.BookThruUser", "BookThruUser")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
