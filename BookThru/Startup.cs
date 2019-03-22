@@ -126,7 +126,7 @@ namespace BookThru
             {
                 nacer = new BookThruUser()
                 {
-                    UserName = "nacer",
+                    UserName = "syednacer@gmail.com",
                     Email = "syednacer@gmail.com",
                 };
                 await UserManager.CreateAsync(nacer, "Amin@2005");
