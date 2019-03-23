@@ -21,5 +21,6 @@ namespace BookThru.Models
         public DbSet<BookThru.Models.Category> Category { get; set; }
         public DbSet<BookThru.Models.CourseCode> CourseCode { get; set; }
         public DbSet<BookThru.Models.UserInfo> UserInfo { get; set; }
+        public DbSet<BookThru.Models.BookBid> BookBid { get; set; }
     }
 }

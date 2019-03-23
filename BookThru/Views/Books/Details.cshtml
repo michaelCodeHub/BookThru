@@ -1,10 +1,33 @@
 ﻿@model BookThru.Models.Book
 
+
+
+<script>
+    function myFunction() {
+        var txt;
+        if (@Model.CurrentBidder.Equals(User.Identity.Name)) {
+
+        } else {
+            if (@DateTime.Compare(Model.Uploaded,DateTime.Now.Date)>0) {
+                <meta http-equiv="refresh" content="5" />
+            }
+            else {
+                if (confirm("Press a button!")) {
+                    window.location.href = '/Books/Index';
+                } else {
+                    window.location.href = '/Books/Index';
+                }
+                document.getElementById("demo").innerHTML = txt;
+            }
+
+        }
+    }
+    window.myFunction();
+</script>
+
 @{
     ViewData["Title"] = "Details";
-
     Model.ImageURL = "https://s3.amazonaws.com/wehire/" + Model.ImageURL;
-
     var expiryDate = Model.Uploaded.AddDays(7);
 }
 
@@ -40,7 +63,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <img class="img-responsive" src="@Model.ImageURL" style="width:100%"/>
+            <img class="img-responsive" src="@Model.ImageURL" style="width:100%" />
         </div>
         <div class="col-md-6">
             <h3>@Model.Name - @Model.Editon Edition</h3>
@@ -48,27 +71,51 @@
             <p>Uploaded on : @Model.Uploaded</p>
             <p><b>Description:</b></p>
             <p>@Model.Description</p>
-            <p>Current Bid : $@Model.MinimumBidPrice</p>
-            <p>Buy Now : $@Model.BuyNowPrice</p>
-            <p style="color:red">@Model.Message</p>
-            <form asp-action="MakeBid">
-                <input type="hidden" asp-for="BookId" />
-                <p><input type="text" placeholder="Type your bid amount" name="Amount" required /></p>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
-                            <input class="btn btn-primary" style="height:100px; width:100%; margin:0px auto;text-align: center;background-color:aqua; vertical-align: middle;display: table-cell; color:white; font-size:30px;" type="submit" value="Bid" />
+
+
+            @if (DateTime.Compare(Model.Uploaded, DateTime.Now.Date) > 0)
+            {
+                <p>Current Bid : $@Model.MinimumBidPrice</p>
+                <p>Buy Now : $@Model.BuyNowPrice</p>
+                <p style="color:red">@Model.Message</p>
+                <form asp-action="MakeBid">
+                    <input type="hidden" asp-for="BookId" />
+                    <p><input type="text" placeholder="Type your bid amount" name="Amount" required /></p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                                <input class="btn btn-primary" style="height:100px; width:100%; margin:0px auto;text-align: center;background-color:aqua; vertical-align: middle;display: table-cell; color:white; font-size:30px;" type="submit" value="Bid" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                                <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BUY</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
-                            <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BUY</p>
+                </form>
+                <p>Bid closes on : @expiryDate</p>
+            }
+            else
+            {
+                @if (Model.CurrentBidder.Equals(User.Identity.Name))
+                {
+                    <h3>You got the book!!!!!</h3>
+
+                    <form asp-action="PayNow">
+                        <input type="hidden" asp-for="BookId" />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                                    <input class="btn btn-primary" style="height:100px; width:100%; margin:0px auto;text-align: center;background-color:aqua; vertical-align: middle;display: table-cell; color:white; font-size:30px;" type="submit" value="Pay Now" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </form>
-            <p>Bid closes on : @expiryDate</p>
+                    </form>
+                }
+            }
         </div>
     </div>
+
 
 </div>

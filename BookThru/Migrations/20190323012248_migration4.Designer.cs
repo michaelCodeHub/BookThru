@@ -4,14 +4,16 @@ using BookThru.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookThru.Migrations
 {
     [DbContext(typeof(BookThruContext))]
-    partial class BookThruContextModelSnapshot : ModelSnapshot
+    [Migration("20190323012248_migration4")]
+    partial class migration4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,8 +84,6 @@ namespace BookThru.Migrations
 
                     b.Property<int>("CourseCodeId");
 
-                    b.Property<string>("CurrentBidder");
-
                     b.Property<string>("Description");
 
                     b.Property<string>("Editon");
@@ -121,15 +121,11 @@ namespace BookThru.Migrations
 
                     b.Property<int>("BidPrice");
 
-                    b.Property<int>("BookId");
-
                     b.Property<DateTime>("DateOfBid");
 
                     b.Property<string>("Id");
 
                     b.HasKey("BookBidId");
-
-                    b.HasIndex("BookId");
 
                     b.HasIndex("Id");
 
@@ -313,11 +309,6 @@ namespace BookThru.Migrations
 
             modelBuilder.Entity("BookThru.Models.BookBid", b =>
                 {
-                    b.HasOne("BookThru.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("BookThru.Data.BookThruUser", "User")
                         .WithMany()
                         .HasForeignKey("Id");

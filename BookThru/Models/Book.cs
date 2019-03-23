@@ -21,7 +21,9 @@ namespace BookThru.Models
         public string Description { get; set; }
         public int MinimumBidPrice { get; set; }
         public int BuyNowPrice{ get; set; }
+        public int Status { get; set; }
         public DateTime Uploaded { get; set; }
+        public string CurrentBidder { get; set; }
 
 
         [ForeignKey("CategoryId")]

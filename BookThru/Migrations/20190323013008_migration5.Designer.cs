@@ -4,14 +4,16 @@ using BookThru.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookThru.Migrations
 {
     [DbContext(typeof(BookThruContext))]
-    partial class BookThruContextModelSnapshot : ModelSnapshot
+    [Migration("20190323013008_migration5")]
+    partial class migration5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,8 +83,6 @@ namespace BookThru.Migrations
                     b.Property<int>("CategoryId");
 
                     b.Property<int>("CourseCodeId");
-
-                    b.Property<string>("CurrentBidder");
 
                     b.Property<string>("Description");
 

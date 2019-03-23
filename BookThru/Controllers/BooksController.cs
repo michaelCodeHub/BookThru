@@ -19,6 +19,7 @@ namespace BookThru.Controllers
         private const string IAMUserPass = "5eOsHBc7Y1CLuEB6+YMLuuNB/Daf+KHGXOT3PMkI";
 
         private readonly BookThruContext _context;
+        
 
         public BooksController(BookThruContext context)
         {
@@ -28,12 +29,15 @@ namespace BookThru.Controllers
         // GET: Books
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.Book.ToListAsync());
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
         }
 
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -233,11 +237,21 @@ namespace BookThru.Controllers
         {
 
             if (!User.IsInRole("User"))
-			{
-				return LocalRedirect("/Identity/Account/Login");
-			}
+            {
+                return LocalRedirect("/Identity/Account/Login");
+            }
 
             var book = await _context.Book.FindAsync(BookId);
+
+            var bookBid = new BookBid
+            {
+                Id = _context.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Id,
+                DateOfBid = DateTime.Now.Date,
+                BidPrice = Amount,
+                BookId = BookId
+            };
+
+            _context.BookBid.Add(bookBid);
 
             if(book.MinimumBidPrice > Amount)
             {
@@ -245,6 +259,7 @@ namespace BookThru.Controllers
             }
             else
             {
+                book.CurrentBidder = User.Identity.Name;
                 book.MinimumBidPrice = Amount;
                 book.Message = "";
             }
