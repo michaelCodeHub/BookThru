@@ -15,6 +15,11 @@ namespace BookThru.Controllers
             return View();
         }
 
+        public async Task<IActionResult> FAQ()
+        {
+            return View();
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
