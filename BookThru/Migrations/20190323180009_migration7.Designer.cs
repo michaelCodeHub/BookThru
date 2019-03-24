@@ -4,14 +4,16 @@ using BookThru.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookThru.Migrations
 {
     [DbContext(typeof(BookThruContext))]
-    partial class BookThruContextModelSnapshot : ModelSnapshot
+    [Migration("20190323180009_migration7")]
+    partial class migration7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,6 +180,10 @@ namespace BookThru.Migrations
 
                     b.HasKey("MessageId");
 
+                    b.HasIndex("FromId");
+
+                    b.HasIndex("ToId");
+
                     b.ToTable("Message");
                 });
 
@@ -340,6 +346,17 @@ namespace BookThru.Migrations
                     b.HasOne("BookThru.Data.BookThruUser", "User")
                         .WithMany()
                         .HasForeignKey("Id");
+                });
+
+            modelBuilder.Entity("BookThru.Models.Message", b =>
+                {
+                    b.HasOne("BookThru.Data.BookThruUser", "FromUser")
+                        .WithMany()
+                        .HasForeignKey("FromId");
+
+                    b.HasOne("BookThru.Data.BookThruUser", "ToUser")
+                        .WithMany()
+                        .HasForeignKey("ToId");
                 });
 
             modelBuilder.Entity("BookThru.Models.UserInfo", b =>

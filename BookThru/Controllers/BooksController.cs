@@ -9,6 +9,7 @@ using BookThru.Models;
 using Amazon.S3;
 using Amazon;
 using Amazon.S3.Transfer;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace BookThru.Controllers
 {
@@ -19,12 +20,76 @@ namespace BookThru.Controllers
         private const string IAMUserPass = "5eOsHBc7Y1CLuEB6+YMLuuNB/Daf+KHGXOT3PMkI";
 
         private readonly BookThruContext _context;
-        
+        private readonly IEmailSender _emailSender;
 
-        public BooksController(BookThruContext context)
+
+        public BooksController(BookThruContext context,
+            IEmailSender emailSender)
         {
             _context = context;
+            _emailSender = emailSender;
         }
+
+        // GET: Books
+        public async Task<IActionResult> Friends()
+        {
+            var messages = await _context.Message.ToListAsync();
+
+            List<string> m = new List<string>();
+
+            foreach(var item in messages)
+            {
+                if (item.FromId.Equals(User.Identity.Name) && !m.Contains(item.ToId))
+                {
+                    m.Add(item.ToId);
+                }
+
+                if (item.ToId.Equals(User.Identity.Name) && !m.Contains(item.FromId))
+                {
+                    m.Add(item.FromId);
+                }
+            }
+
+            return View(m);
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
+        // GET: Books
+        [HttpGet]
+        public async Task<IActionResult> Messages(string id)
+        {
+            var lists = await _context.Message.Where(x => (x.FromId.Equals(User.Identity.Name) && x.ToId.Equals(id)) ||
+            x.ToId.Equals(User.Identity.Name) && x.FromId.Equals(id)).ToListAsync();
+            return View(lists);
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
+
+        // GET: Books
+        [HttpPost]
+        public async Task<IActionResult> Messages(string message, string toid)
+        {
+            Message m = new Message
+            {
+                Content = message,
+                FromId = User.Identity.Name,
+                ToId = toid,
+                Sent = DateTime.Now.Date
+            };
+
+            _context.Message.Add(m);
+            await _context.SaveChangesAsync();
+
+            await _emailSender.SendEmailAsync(toid, "New Message",
+                $"You have a mesasge from "+User.Identity.Name);
+
+
+            var lists = await _context.Message.Where(x => (x.FromId.Equals(User.Identity.Name) && x.ToId.Equals(toid)) ||
+            x.ToId.Equals(User.Identity.Name) && x.FromId.Equals(toid)).ToListAsync();
+            return View(lists);
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
 
         // GET: Books
         public async Task<IActionResult> Index()
