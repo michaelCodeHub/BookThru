@@ -1,0 +1,17 @@
+﻿@model IEnumerable<string>
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<div class="container">
+    @foreach (var item in Model)
+    {
+
+        <a asp-action="Messages" asp-controller="Books" asp-route-id="@item">
+            <p style="text-align:center">@item</p>
+        </a>
+    }
+</div>

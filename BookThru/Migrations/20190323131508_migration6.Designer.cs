@@ -4,18 +4,20 @@ using BookThru.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookThru.Migrations
 {
     [DbContext(typeof(BookThruContext))]
-    partial class BookThruContextModelSnapshot : ModelSnapshot
+    [Migration("20190323131508_migration6")]
+    partial class migration6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
+                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -160,25 +162,6 @@ namespace BookThru.Migrations
                     b.HasKey("CourseCodeId");
 
                     b.ToTable("CourseCode");
-                });
-
-            modelBuilder.Entity("BookThru.Models.Message", b =>
-                {
-                    b.Property<int>("MessageId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Content");
-
-                    b.Property<string>("FromId");
-
-                    b.Property<DateTime>("Sent");
-
-                    b.Property<string>("ToId");
-
-                    b.HasKey("MessageId");
-
-                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("BookThru.Models.UserInfo", b =>

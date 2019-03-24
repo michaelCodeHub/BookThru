@@ -1,0 +1,31 @@
+﻿@model IEnumerable<BookThru.Models.Message>
+
+@{
+    ViewData["Title"] = "Edit";
+    var x = "";
+}
+<meta http-equiv="refresh" content="5" />
+<h2>Edit</h2>
+
+<div class="container">
+    @foreach (var item in Model)
+    {
+        if (item.FromId.Equals(User.Identity.Name))
+        {
+
+            <p style="text-align:right">@item.FromId<br />@item.Content</p>
+        }
+        else
+        {
+            x = item.FromId;
+            <p style="text-align:left">@item.FromId<br />@item.Content</p>
+        }
+    }
+</div>
+<div class="container">
+    <form asp-action="Messages" method="post">
+        <input type="text" name="message"/>
+        <input type="hidden" name="toid" value="@x"/>
+        <input type="submit" value="Send"/>
+    </form>
+</div>

@@ -1,11 +1,38 @@
 ﻿@model BookThru.Models.Book
 
+
+@using Microsoft.Extensions.Options
+@inject IOptions<StripeSettings> Stripe
+
 @{
     ViewData["Title"] = "Details";
-
     Model.ImageURL = "https://s3.amazonaws.com/wehire/" + Model.ImageURL;
-
     var expiryDate = Model.Uploaded.AddDays(7);
+}
+
+<script>
+    function myFunction() {
+        var txt;
+
+        if (@DateTime.Compare(expiryDate,DateTime.Now.Date)< 0) {
+            if (@Model.CurrentBidder.Equals(User.Identity.Name)) {
+            } else {
+
+                if (confirm("Press a button!")) {
+                    window.location.href = '/Books/Index';
+                } else {
+                    window.location.href = '/Books/Index';
+                }
+                document.getElementById("demo").innerHTML = txt;
+            }
+        }
+    }
+    window.myFunction();
+</script>
+
+@if (DateTime.Compare(expiryDate, DateTime.Now.Date) > 0)
+{
+    <meta http-equiv="refresh" content="5" />
 }
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -40,7 +67,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <img class="img-responsive" src="@Model.ImageURL" style="width:100%"/>
+            <img class="img-responsive" src="@Model.ImageURL" style="width:100%" />
         </div>
         <div class="col-md-6">
             <h3>@Model.Name - @Model.Editon Edition</h3>
@@ -48,27 +75,78 @@
             <p>Uploaded on : @Model.Uploaded</p>
             <p><b>Description:</b></p>
             <p>@Model.Description</p>
-            <p>Current Bid : $@Model.MinimumBidPrice</p>
-            <p>Buy Now : $@Model.BuyNowPrice</p>
-            <p style="color:red">@Model.Message</p>
-            <form asp-action="MakeBid">
-                <input type="hidden" asp-for="BookId" />
-                <p><input type="text" placeholder="Type your bid amount" name="Amount" required /></p>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
-                            <input class="btn btn-primary" style="height:100px; width:100%; margin:0px auto;text-align: center;background-color:aqua; vertical-align: middle;display: table-cell; color:white; font-size:30px;" type="submit" value="Bid" />
+
+
+            @if (DateTime.Compare(expiryDate, DateTime.Now.Date) > 0)
+            {
+                <p>Current Bid : $@Model.MinimumBidPrice</p>
+                <p>Buy Now : $@Model.BuyNowPrice</p>
+                <p style="color:red">@Model.Message</p>
+                <form asp-action="MakeBid">
+                    <input type="hidden" asp-for="BookId" />
+                    <p><input type="text" placeholder="Type your bid amount" name="Amount" required /></p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                                <input class="btn btn-primary" style="height:100px; width:100%; margin:0px auto;text-align: center;background-color:aqua; vertical-align: middle;display: table-cell; color:white; font-size:30px;" type="submit" value="Bid" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
+                        @*<div class="col-md-6">
                         <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
                             <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BUY</p>
                         </div>
+                    </div>*@
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <form action="/Books/charge" method="POST">
+                            <article>
+                                <label>Total: $@Model.BuyNowPrice</label>
+                            </article>
+                            <script src="//checkout.stripe.com/v2/checkout.js"
+                                    class="stripe-button"
+                                    data-key="@Stripe.Value.PublishableKey"
+                                    data-locale="auto"
+                                    data-description="@Model.Name - @Model.Editon Edition"
+                                    data-amount="$@Model.BuyNowPrice">
+                            </script>
+                        </form>
                     </div>
                 </div>
-            </form>
-            <p>Bid closes on : @expiryDate</p>
+                <p>Bid closes on : @expiryDate</p>
+            }
+            else
+            {
+                @if (Model.CurrentBidder.Equals(User.Identity.Name))
+                {
+                    <h3>You got the book!!!!!</h3>
+
+
+                    <form action="/Books/charge" method="POST">
+                        <article>
+                            <label>Total: $@Model.MinimumBidPrice</label>
+                        </article>
+                        <script src="//checkout.stripe.com/v2/checkout.js"
+                                class="stripe-button"
+                                data-key="@Stripe.Value.PublishableKey"
+                                data-locale="auto"
+                                data-description="@Model.Name - @Model.Editon Edition"
+                                data-amount="$@Model.MinimumBidPrice">
+                        </script>
+                    </form>
+                }
+                else
+                {
+                    <h3>Book Sold</h3>
+                    <p>Subscribe to know if the same book added</p>
+                    <input type="text" placeholder="Email" name="Email"/>
+                    <input type="submit" name="Submit" value="Submit"/>
+                }
+            }
         </div>
     </div>
+
 
 </div>
