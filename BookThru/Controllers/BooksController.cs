@@ -10,6 +10,7 @@ using Amazon.S3;
 using Amazon;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Stripe;
 
 namespace BookThru.Controllers
 {
@@ -154,7 +155,7 @@ namespace BookThru.Controllers
                 book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
                 book.Uploaded = DateTime.Now.Date;
                 await UploadFileAsync(file.OpenReadStream(), book.ImageURL);
-
+                book.CurrentBidder = "";
 
                 _context.Add(book);
 
@@ -334,6 +335,28 @@ namespace BookThru.Controllers
             return LocalRedirect("/Books/Details/"+BookId);
         }
 
-    }
 
+        public IActionResult Charge(string stripeEmail, string stripeToken)
+        {
+            var customers = new CustomerService();
+            var charges = new ChargeService();
+
+            var customer = customers.Create(new CustomerCreateOptions
+            {
+                Email = stripeEmail,
+                SourceToken = stripeToken
+            });
+
+            var charge = charges.Create(new ChargeCreateOptions
+            {
+                Amount = 500,
+                Description = "Book Purchase",
+                Currency = "CAD",
+                CustomerId = customer.Id
+            });
+
+            return View();
+        }
+
+    }
 }

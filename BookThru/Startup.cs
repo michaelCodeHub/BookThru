@@ -47,6 +47,7 @@ namespace BookThru
                 .AddEntityFrameworkStores<BookThruContext>()
             .AddTokenProvider(TokenOptions.DefaultProvider, dataProtectionProviderType);
 
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
