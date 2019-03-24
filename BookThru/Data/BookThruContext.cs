@@ -11,6 +11,10 @@ namespace BookThru.Models
 {
     public class BookThruContext : IdentityDbContext<BookThruUser>
     {
+        public BookThruContext()
+        {
+        }
+
         public BookThruContext (DbContextOptions<BookThruContext> options)
             : base(options)
         {
