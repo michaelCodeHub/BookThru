@@ -1,0 +1,91 @@
+/*------------------------------------------------------------------
+Background Color
+-------------------------------------------------------------------*/
+.bg-color,
+.action-btns > ul > li > a span,
+.closecartslide,
+.subsform > form > button,
+#hamburger-two.active span:nth-of-type(2):before,
+#hamburger-two.active span:nth-of-type(2),
+.viewallbtn a,
+.shop-product.list .quickp > li:first-child > a,
+.blogpost > a:hover,
+.leavecomment form button:hover,
+.disc-code > form button:hover,
+.cartlistsec > a:hover,
+.shipform > form button:hover,
+.cart-totals > a:hover,
+.placeorder a:hover,
+.contactform form input[type="submit"]:hover,
+.fmenus.tags > a:hover,
+.mainfeatured.style2 .mainf-info > a:hover,
+.bannerp a:hover,
+.cartinfos > a:hover,
+.order-completesec > a:hover,
+.acountsec > form > button:hover,
+.pactions > a:hover,
+.reviewform > form input[type="submit"]:hover,
+.cartinfo > a:hover{
+    background-color: #d35050 ;
+}
+
+/*------------------------------------------------------------------
+Text Color
+-------------------------------------------------------------------*/
+.text-color,
+.searchpopup > span,
+header nav > ul > li.menu-item-has-children:hover > a,
+.action-btns > ul > li:hover > a,
+.delcart,
+.prd-infos > span,
+.portfolio-nav > li a.selected span,
+.mainfeatured.style2 .mainf-info > h3 span,
+.px1 > span,
+.px1 h3 span,
+.px2 > h3,
+.px3 > h3 span,
+.px4 > h3 span,
+.bannerpinfo > h3,
+.bannerp.flip .bannerpinfo > span,
+.mpinfo > span,
+.mp-info > span,
+.pinfo > span,
+.closeview,
+.tab-sec2 .nav.nav-tabs > li a.current,
+.pd-img a i,
+.cartinfo > i,
+.ur-orders > ul > li > p strong,
+.ur-orders > ul > li > strong i,
+.order-complete > p strong,
+.contactinfo > strong,
+.error-sec > i,
+.error-sec > p a,
+.link-widget > a:hover,
+.contact-widget > span:hover i,
+.blogpost > h3:hover > a,
+.psd-info > h3:hover,
+.cat-widget > a:hover,
+.comment-info > h3:hover,
+.comment-info > a:hover,
+.cartinfo > h3:hover,
+.checkoutsec > span a:hover,
+.checkoutsec > form span:hover,
+.contactinfo .social a:hover,
+.fmenus > a:hover,
+.prd-infos > h3:hover,
+header nav > ul > li:hover > a
+{
+    color: #d35050;
+}
+
+/*------------------------------------------------------------------
+Border Color
+-------------------------------------------------------------------*/
+.border-color,
+.cartlistsec > a:hover,
+.mainfeatured.style2 .mainf-info > a:hover,
+.cartinfos > a:hover,
+.pactions > a:hover,
+.cartinfo > a:hover{
+    border-color: #d35050 ;
+}

@@ -20,6 +20,12 @@
     <Content Update="Areas\Identity\Pages\Account\Waiting.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Books\Search.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Books\PaymentSuccess.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Books\Messages.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
