@@ -104,22 +104,10 @@ body {
     padding:10px;
 }
 
-
-/*Login*/
-
-
-.searchBox {
-    width: 100%;
-    margin-top: 50px;
-    margin-bottom: 50px;
+.searchButton {
+    height: 40px;
 }
-
-    .searchBox input {
-        height: 40px;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
+/*Login*/
 .videoTitle {
     color: #212121;
     text-transform: uppercase;

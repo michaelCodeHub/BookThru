@@ -36,7 +36,12 @@
 <div class="container">
 
     <div class="searchBoxDiv">
-        <input class="searchBox" type="text" style="width:100%;" placeholder="Search a Book"/>
+        <form>
+            <div class="row col-lg-12">
+                <input class="searchBox col-md-10" type="text" name="SearchText" placeholder="Search a Book" />
+                <button asp-action="Search" class="searchButton col-md-2" asp-controller="Books" type="submit"><i class="la la-search"></i></button>
+            </div>
+        </form>
     </div>
 
     <div class="row">

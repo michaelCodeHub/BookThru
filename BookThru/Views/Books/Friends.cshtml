@@ -1,4 +1,4 @@
-﻿@model IEnumerable<string>
+﻿@model IEnumerable<Contact>
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,8 +10,8 @@
     @foreach (var item in Model)
     {
 
-        <a asp-action="Messages" asp-controller="Books" asp-route-id="@item">
-            <p style="text-align:center">@item</p>
+        <a asp-action="Messages" asp-controller="Books" asp-route-id="@item.ToId">
+            <p style="text-align:center">@item.ToName</p>
         </a>
     }
 </div>

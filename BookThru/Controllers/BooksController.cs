@@ -11,6 +11,9 @@ using Amazon;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Stripe;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.AspNetCore.Http;
+using BookThru.Data;
 
 namespace BookThru.Controllers
 {
@@ -34,24 +37,18 @@ namespace BookThru.Controllers
         // GET: Books
         public async Task<IActionResult> Friends()
         {
-            var messages = await _context.Message.ToListAsync();
-
-            List<string> m = new List<string>();
-
-            foreach(var item in messages)
+            BookThruUser u = _context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault();
+            var messages = await _context.Contact.Where(x=>x.FromId==u.Id).ToListAsync();
+            
+            foreach(var i in messages)
             {
-                if (item.FromId.Equals(User.Identity.Name) && !m.Contains(item.ToId))
-                {
-                    m.Add(item.ToId);
-                }
+                var userInfo = _context.UserInfo.Find(i.ToId);
 
-                if (item.ToId.Equals(User.Identity.Name) && !m.Contains(item.FromId))
-                {
-                    m.Add(item.FromId);
-                }
+                i.ToName = userInfo.FirstName + " " + userInfo.LastName;
             }
 
-            return View(m);
+
+            return View(messages);
             //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
         }
 
@@ -59,10 +56,35 @@ namespace BookThru.Controllers
         [HttpGet]
         public async Task<IActionResult> Messages(string id)
         {
-            var lists = await _context.Message.Where(x => (x.FromId.Equals(User.Identity.Name) && x.ToId.Equals(id)) ||
-            x.ToId.Equals(User.Identity.Name) && x.FromId.Equals(id)).ToListAsync();
+            BookThruUser u = _context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault();
+
+            ViewBag.Email = id;
+            BookThruUser user = _context.Users.Where(x => x.Id == id).FirstOrDefault();
+            ViewBag.Name = _context.UserInfo.Where(x => x.Id == user.Id).FirstOrDefault().FirstName;
+
+            AddContact(id, _context.Users.Where(x=>x.Email == User.Identity.Name).FirstOrDefault().Id);
+            AddContact(_context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault().Id, id);
+
+            var lists = await _context.Message.Where(x => (x.FromId.Equals(u.Id) && x.ToId.Equals(id)) ||
+            x.ToId.Equals(u.Id) && x.FromId.Equals(id)).ToListAsync();
             return View(lists);
             //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
+        public void AddContact(string from, string to)
+        {
+
+            Contact contact = _context.Contact.Where(x => x.FromId == from && x.ToId == to).FirstOrDefault();
+            if (contact == null)
+            {
+                _context.Contact.Add(new Contact
+                {
+                    FromId = from,
+                    ToId = to
+                });
+
+                _context.SaveChanges();
+            }
         }
 
 
@@ -70,10 +92,12 @@ namespace BookThru.Controllers
         [HttpPost]
         public async Task<IActionResult> Messages(string message, string toid)
         {
+            BookThruUser u = _context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault();
+
             Message m = new Message
             {
                 Content = message,
-                FromId = User.Identity.Name,
+                FromId = u.Id,
                 ToId = toid,
                 Sent = DateTime.Now.Date
             };
@@ -82,11 +106,19 @@ namespace BookThru.Controllers
             await _context.SaveChangesAsync();
 
             await _emailSender.SendEmailAsync(toid, "New Message",
-                $"You have a mesasge from "+User.Identity.Name);
+                $"You have a mesasge from " + User.Identity.Name);
 
 
-            var lists = await _context.Message.Where(x => (x.FromId.Equals(User.Identity.Name) && x.ToId.Equals(toid)) ||
-            x.ToId.Equals(User.Identity.Name) && x.FromId.Equals(toid)).ToListAsync();
+
+            ViewBag.Email = toid;
+            BookThruUser user = _context.Users.Where(x => x.Id == toid).FirstOrDefault();
+            ViewBag.Name = _context.UserInfo.Where(x => x.Id == user.Id).FirstOrDefault().FirstName;
+
+            AddContact(toid, _context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault().Id);
+            AddContact(_context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault().Id, toid);
+
+            var lists = await _context.Message.Where(x => (x.FromId.Equals(u.Id) && x.ToId.Equals(toid)) ||
+            x.ToId.Equals(u.Id) && x.FromId.Equals(toid)).ToListAsync();
             return View(lists);
             //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
         }
@@ -97,6 +129,13 @@ namespace BookThru.Controllers
         {
 
             return View(await _context.Book.ToListAsync());
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
+        public async Task<IActionResult> Search(string SearchText)
+        {
+
+            return View(await _context.Book.Where(x => x.Name.Contains(SearchText)).ToListAsync());
             //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
         }
 
@@ -120,6 +159,14 @@ namespace BookThru.Controllers
             }
 
             return View(book);
+        }
+
+        private static void DisplayStates(IEnumerable<EntityEntry> entries)
+        {
+            foreach (var entry in entries)
+            {
+                System.Diagnostics.Debug.WriteLine(entry.State.ToString()+" mmmmmm");
+            }
         }
 
         // GET: Books/Create
@@ -149,9 +196,9 @@ namespace BookThru.Controllers
                 var file = this.Request.Form.Files[0];
                 Random rnd = new Random();
                 book.ImageURL = rnd.Next(99999999).ToString() + "." + file.ContentType.Substring(file.ContentType.Length - 3);
-                book.User = _context.Users.Where(user=>user.Email == User.Identity.Name).FirstOrDefault();
-                book.Category = _context.Category.Where(cat=> cat.CategoryId== book.CategoryId).FirstOrDefault();
-                book.CourseCode = _context.CourseCode.Where(course => course.CourseCodeId== book.CourseCodeId).FirstOrDefault();
+                book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
+                book.Category = _context.Category.Where(cat => cat.CategoryId == book.CategoryId).FirstOrDefault();
+                book.CourseCode = _context.CourseCode.Where(course => course.CourseCodeId == book.CourseCodeId).FirstOrDefault();
                 book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
                 book.Uploaded = DateTime.Now.Date;
                 await UploadFileAsync(file.OpenReadStream(), book.ImageURL);
@@ -302,10 +349,10 @@ namespace BookThru.Controllers
         public async Task<IActionResult> MakeBid(int BookId, int Amount)
         {
 
-            if (!User.IsInRole("User"))
-            {
-                return LocalRedirect("/Identity/Account/Login");
-            }
+            //if (!User.IsInRole("User")|| !User.IsInRole("Admin"))
+            //{
+            //    return LocalRedirect("/Identity/Account/Login");
+            //}
 
             var book = await _context.Book.FindAsync(BookId);
 
@@ -331,6 +378,9 @@ namespace BookThru.Controllers
             }
             _context.Update(book);
             _context.SaveChanges();
+
+
+            DisplayStates(_context.ChangeTracker.Entries());
 
             return LocalRedirect("/Books/Details/"+BookId);
         }
