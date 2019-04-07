@@ -32,10 +32,10 @@
 
 @if (DateTime.Compare(expiryDate, DateTime.Now.Date) > 0)
 {
-    <meta http-equiv="refresh" content="5" />
+    <meta http-equiv="refresh" content="20" />
 }
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel">
+@*<div id="myCarousel" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -57,13 +57,13 @@
             <img src="~/images/slider3.jpg" alt="">
         </div>
     </div>
-</div>
+</div>*@
 
 <div class="container">
 
-    <div class="searchBoxDiv">
+    @*<div class="searchBoxDiv">
         <input class="searchBox" type="text" style="width:100%;" placeholder="Search a Book" />
-    </div>
+    </div>*@
 
     <div class="row">
         <div class="col-md-6">
@@ -101,7 +101,8 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <form action="/Books/charge" method="POST">
+                        <h3>Buy Now</h3>
+                        <form action="/Books/PaymentSuccess" method="POST">
                             <article>
                                 <label>Total: $@Model.BuyNowPrice</label>
                             </article>
@@ -124,7 +125,7 @@
                     <h3>You got the book!!!!!</h3>
 
 
-                    <form action="/Books/charge" method="POST">
+                    <form action="/Books/PaymentSuccess" method="POST">
                         <article>
                             <label>Total: $@Model.MinimumBidPrice</label>
                         </article>

@@ -9,7 +9,8 @@ using BookThru.Models;
 using Amazon.S3;
 using Amazon;
 using Amazon.S3.Transfer;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Stripe;
 
 namespace BookThru.Controllers
 {
@@ -20,24 +21,106 @@ namespace BookThru.Controllers
         private const string IAMUserPass = "5eOsHBc7Y1CLuEB6+YMLuuNB/Daf+KHGXOT3PMkI";
 
         private readonly BookThruContext _context;
+        private readonly IEmailSender _emailSender;
 
-        public BooksController(BookThruContext context)
+
+        public BooksController(BookThruContext context,
+            IEmailSender emailSender)
         {
             _context = context;
+            _emailSender = emailSender;
         }
 
         // GET: Books
-  
+        public async Task<IActionResult> Friends()
+        {
+            var messages = await _context.Message.ToListAsync();
+
+            List<string> m = new List<string>();
+
+            foreach (var item in messages)
+            {
+                if (item.FromId.Equals(User.Identity.Name) && !m.Contains(item.ToId))
+                {
+                    m.Add(item.ToId);
+                }
+
+                if (item.ToId.Equals(User.Identity.Name) && !m.Contains(item.FromId))
+                {
+                    m.Add(item.FromId);
+                }
+            }
+
+            return View(m);
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PaymentSuccess()
+        {
+            await _emailSender.SendEmailAsync(User.Identity.Name, "Payment Done",
+                $"You have a mesasge from ");
+
+            return View();
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
+        // GET: Books
+        [HttpGet]
+        public async Task<IActionResult> Messages(string id)
+        {
+            var lists = await _context.Message.Where(x => (x.FromId.Equals(User.Identity.Name) && x.ToId.Equals(id)) ||
+            x.ToId.Equals(User.Identity.Name) && x.FromId.Equals(id)).ToListAsync();
+            return View(lists);
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
+
+        // GET: Books
+        [HttpPost]
+        public async Task<IActionResult> Messages(string message, string toid)
+        {
+            Message m = new Message
+            {
+                Content = message,
+                FromId = User.Identity.Name,
+                ToId = toid,
+                Sent = DateTime.Now.Date
+            };
+
+            _context.Message.Add(m);
+            await _context.SaveChangesAsync();
+
+            await _emailSender.SendEmailAsync(toid, "New Message",
+                $"You have a mesasge from " + User.Identity.Name);
+
+
+            var lists = await _context.Message.Where(x => (x.FromId.Equals(User.Identity.Name) && x.ToId.Equals(toid)) ||
+            x.ToId.Equals(User.Identity.Name) && x.FromId.Equals(toid)).ToListAsync();
+            return View(lists);
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
+
+        // GET: Books
         public async Task<IActionResult> Index()
         {
-           return View(await _context.Book.ToListAsync());
-            //return View();
+            return View(await _context.Book.ToListAsync());
+        }
+
+
+        // GET: Books
+        public async Task<IActionResult> Search(string SearchText)
+        {
+
+            return View(await _context.Book.Where(x=>x.Name.Contains(SearchText)).ToListAsync());
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
         }
 
         // GET: Books/Details/5
-
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -57,12 +140,12 @@ namespace BookThru.Controllers
         }
 
         // GET: Books/Create
-  
         public IActionResult Create()
         {
 
 
-            CreateModel model = new CreateModel {
+            CreateModel model = new CreateModel
+            {
                 Categories = _context.Category.ToList(),
                 CourseCodes = _context.CourseCode.ToList()
             };
@@ -75,7 +158,6 @@ namespace BookThru.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
- 
         public async Task<IActionResult> Create([Bind("Book,Categories,CourseCodes")] CreateModel createModel)
         {
             var book = createModel.Book;
@@ -85,13 +167,13 @@ namespace BookThru.Controllers
                 var file = this.Request.Form.Files[0];
                 Random rnd = new Random();
                 book.ImageURL = rnd.Next(99999999).ToString() + "." + file.ContentType.Substring(file.ContentType.Length - 3);
-                book.User = _context.Users.Where(user=>user.Email == User.Identity.Name).FirstOrDefault();
-                book.Category = _context.Category.Where(cat=> cat.CategoryId== book.CategoryId).FirstOrDefault();
-                book.CourseCode = _context.CourseCode.Where(course => course.CourseCodeId== book.CourseCodeId).FirstOrDefault();
+                book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
+                book.Category = _context.Category.Where(cat => cat.CategoryId == book.CategoryId).FirstOrDefault();
+                book.CourseCode = _context.CourseCode.Where(course => course.CourseCodeId == book.CourseCodeId).FirstOrDefault();
                 book.User = _context.Users.Where(user => user.Email == User.Identity.Name).FirstOrDefault();
                 book.Uploaded = DateTime.Now.Date;
                 await UploadFileAsync(file.OpenReadStream(), book.ImageURL);
-
+                book.CurrentBidder = "";
 
                 _context.Add(book);
 
@@ -102,7 +184,6 @@ namespace BookThru.Controllers
         }
 
         // GET: Books/Edit/5
-  
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -240,27 +321,60 @@ namespace BookThru.Controllers
         {
 
             if (!User.IsInRole("User"))
-			{
-				return LocalRedirect("/Identity/Account/Login");
-			}
+            {
+                return LocalRedirect("/Identity/Account/Login");
+            }
 
             var book = await _context.Book.FindAsync(BookId);
 
-            if(book.MinimumBidPrice > Amount)
+            var bookBid = new BookBid
             {
-                book.Message =  "Please enter a greater amount";
+                Id = _context.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault().Id,
+                DateOfBid = DateTime.Now.Date,
+                BidPrice = Amount,
+                BookId = BookId
+            };
+
+            _context.BookBid.Add(bookBid);
+
+            if (book.MinimumBidPrice > Amount)
+            {
+                book.Message = "Please enter a greater amount";
             }
             else
             {
+                book.CurrentBidder = User.Identity.Name;
                 book.MinimumBidPrice = Amount;
                 book.Message = "";
             }
             _context.Update(book);
             _context.SaveChanges();
 
-            return LocalRedirect("/Books/Details/"+BookId);
+            return LocalRedirect("/Books/Details/" + BookId);
+        }
+
+
+        public IActionResult Charge(string stripeEmail, string stripeToken)
+        {
+            var customers = new CustomerService();
+            var charges = new ChargeService();
+
+            var customer = customers.Create(new CustomerCreateOptions
+            {
+                Email = stripeEmail,
+                SourceToken = stripeToken
+            });
+
+            var charge = charges.Create(new ChargeCreateOptions
+            {
+                Amount = 500,
+                Description = "Book Purchase",
+                Currency = "CAD",
+                CustomerId = customer.Id
+            });
+
+            return View();
         }
 
     }
-
 }

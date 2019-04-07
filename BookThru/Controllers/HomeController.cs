@@ -31,6 +31,8 @@ namespace BookThru.Controllers
         {
             return View(_context.UserInfo.ToList());
         }
+
+       
         public async Task<IActionResult> ChangeRole(string Id)
         {
             var user = await _context.Users.FindAsync(Id);
@@ -69,9 +71,7 @@ namespace BookThru.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
+            return View(_context.UserInfo.ToList());
         }
 
         public IActionResult Contact()
@@ -90,6 +90,11 @@ namespace BookThru.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult showBooks() {
+
+            return View(_context.Book.ToList());
         }
     }
 }
