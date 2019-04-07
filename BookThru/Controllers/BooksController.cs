@@ -30,7 +30,8 @@ namespace BookThru.Controllers
   
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Book.ToListAsync());
+           return View(await _context.Book.ToListAsync());
+            //return View();
         }
 
         // GET: Books/Details/5
