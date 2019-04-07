@@ -132,6 +132,26 @@ namespace BookThru.Controllers
             //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
         }
 
+        // GET: Books
+        public async Task<IActionResult> MyBooks()
+        {
+            BookThruUser u = _context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault();
+
+
+            var list = await _context.Book.ToListAsync();
+            var sList = list.Where(y => y.Id == u.Id).ToList();
+            var bList = list.Where(y => y.CurrentBidder == u.Email).ToList();
+
+            MyBook myBook = new MyBook
+            {
+                Sold = list,
+                Bought = bList
+            };
+
+            return View(myBook);
+            //return View(await _context.Book.Where(x=>x.Uploaded> DateTime.Now.Date).ToListAsync());
+        }
+
         public async Task<IActionResult> Search(string SearchText)
         {
 

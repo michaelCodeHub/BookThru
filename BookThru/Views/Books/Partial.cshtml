@@ -1,0 +1,51 @@
+﻿@model IEnumerable<BookThru.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+
+    foreach(var item in Model)
+    {
+        item.ImageURL = "https://s3.amazonaws.com/wehire/" + item.ImageURL;
+    }
+}
+
+<div class="container">
+
+    <div class="row">
+        <div class="row justify-content-center">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4" style="padding:10px;">
+                    <div class="bookItem">
+                        <div class="imageOuter">
+                            <img src="@item.ImageURL" class="imageInner" />
+                        </div>
+                        <div class="detailsOuter">
+                            <p><a asp-action="Details"  asp-route-id="@item.BookId">@item.Name</a></p>
+                            <br />
+                            @*<div class="row">
+                                <div class="col-lg-6">
+                                    <a href="#" class="btn btn-primary btn-home" style="width:100%;color:white;">Bid Now $@item.MinimumBidPrice </a>
+                                </div>
+                                <div class="col-lg-6">
+                                    <a href="#" class="btn btn-primary btn-home" style="width:100%;color:white">Buy Now $@item.BuyNowPrice</a>
+                                </div>
+                            </div>*@
+                            @*<div class="row">
+                                <p class="col-md-6"> </p>
+                                <span class="col-md-2" style="text-align:right">$@item.MinimumBidPrice</span>
+                                <a class="col-md-4" href="#" style="text-align:right">BID</a>
+                            </div>
+                            <div class="row">
+                                <p class="col-md-6">Buy Now</p>
+                                <span class="col-md-2" style="text-align:right">$@item.BuyNowPrice</span>
+                                <a class="col-md-4" href="#" style="text-align:right">BUY</a>
+                            </div>*@
+                        </div>
+                    </div>
+                        
+                </div>
+            }
+        </div>
+    </div>
+</div>
