@@ -4805,6 +4805,12 @@ header nav > ul > li.menu-item-has-children > ul > li:hover > a {
 
 }
 
+#crBook {
+    width: 700px;
+    margin-right:auto;
+    margin-left:auto;
+    background-color:gray;
+}
 
 
 

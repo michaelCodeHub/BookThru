@@ -1,0 +1,100 @@
+﻿@model BookThru.Models.Book
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Book</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ImageURL)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ImageURL)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Editon)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Editon)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MinimumBidPrice)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MinimumBidPrice)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BuyNowPrice)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BuyNowPrice)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Uploaded)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Uploaded)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CurrentBidder)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CurrentBidder)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Category.CategoryId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CourseCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CourseCode.CourseCodeId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Message)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Message)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="BookId" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

@@ -25,11 +25,37 @@ namespace BookThru.Controllers
             _roleManager = roleManager;
         }
 
-        
-      
+        public IActionResult Create(Book book)
+        {
+
+            try
+            {
+                _context.Book.Add(book);
+                _context.SaveChanges();
+                return RedirectToAction("showBooks");
+
+            }
+
+            catch
+            {
+                //return View();
+            }
+         
+            return RedirectToAction("Index");
+
+            //return View();
+        }
+        public IActionResult CreateUser(UserInfo addUser)
+        {
+              _context.UserInfo.Add(addUser);
+                _context.SaveChanges();
+                //RedirectToAction("Index");
+            return View();
+        }
         public IActionResult Index()
         {
-            return View(_context.UserInfo.ToList());
+            var userInformation = _context.UserInfo.ToList();
+            return View(userInformation);
         }
 
        
@@ -52,23 +78,6 @@ namespace BookThru.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        public async Task<IActionResult> Delete(String Id)
-        {
-            BookThruContext dContext = new BookThruContext();
-
-            if (Id == null)
-            {
-                return NotFound();
-            }
-
-            var user = _userManager.Users.Where(a => a.Id == Id).FirstOrDefault();
-            UserInfo ur = new UserInfo { Id = user.Id, FirstName = user.UserName, LastName= user.UserName, PhoneNumber= user.PhoneNumber };
-            var x = await _userManager.GetRolesAsync(user);
-           // ur.R = String.Join(",", x);
-            return View(ur);
-        }
-
         public IActionResult About()
         {
             return View(_context.UserInfo.ToList());
@@ -126,6 +135,15 @@ namespace BookThru.Controllers
                 return NotFound();
             }
             return View(book);
+        }
+        [HttpPost]
+        public IActionResult Edit(int id, [Bind("BookId, Name,CategoryID,CourseCodeID,Editon,Description,MinimumBidePrice,BuyNowPrice,Message,Status")] Book book)
+        {
+
+            _context.Entry(book).State = EntityState.Modified;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+
         }
 
 
