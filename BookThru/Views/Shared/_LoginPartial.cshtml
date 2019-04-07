@@ -3,6 +3,7 @@
 @inject SignInManager<BookThruUser> SignInManager
 @inject UserManager<BookThruUser> UserManager
 
+
 @if (SignInManager.IsSignedIn(User))
 {
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
@@ -10,6 +11,7 @@
 
             <li><a asp-controller="Books" asp-action="Friends">Messages</a></li>
             <li><a asp-controller="Books" asp-action="Create">Add a Book</a></li>
+          
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -21,13 +23,15 @@
                     <button type="submit" class="dropdown-item" style="margin:10px; background-color:white; text-decoration:none">Logout</button>
                 </div>
             </li>
+          
         </ul>
     </form>
 }
+
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+        <li><a asp-area="Identity" asp-page="/Account/Register"> Register</a></li>
         <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
     </ul>
 }

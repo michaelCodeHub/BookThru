@@ -124,7 +124,20 @@ namespace BookThru
                 await UserManager.CreateAsync(michaeljaison, "P@ssw0rd");
             }
             await UserManager.AddToRoleAsync(michaeljaison, "Admin");
-           
+
+            // Admin Role To nasir
+            BookThruUser nacer = await UserManager.FindByEmailAsync("syednacer@gmail.com");
+            if (nacer == null)
+            {
+                nacer = new BookThruUser()
+                {
+                    UserName = "syednacer@gmail.com",
+                    Email = "syednacer@gmail.com",
+                };
+                await UserManager.CreateAsync(nacer, "Amin@2005");
+            }
+            await UserManager.AddToRoleAsync(nacer, "Admin");
+
         }
     }
 }
