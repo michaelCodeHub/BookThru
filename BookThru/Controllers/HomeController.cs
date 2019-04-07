@@ -106,6 +106,24 @@ namespace BookThru.Controllers
             return View(_context.Book.ToList());
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteUser(String id)
+        {
+            if (id == null) {
+
+                return NotFound();
+
+            }
+
+            var user = await _context.UserInfo
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (user == null) {
+
+                return NotFound();
+            }
+            return View(user);
+        }
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -122,19 +140,34 @@ namespace BookThru.Controllers
 
             return View(book);
         }
-        public async Task<IActionResult> Edit(int? id)
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (id == null)
+            var book = await _context.Book.FindAsync(id);
+            _context.Book.Remove(book);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (id == -1)
             {
                 return NotFound();
             }
 
-            var book = await _context.Book.FindAsync(id);
+            var book = await _context.Book.FirstOrDefaultAsync(i => i.BookId == id);
             if (book == null)
             {
                 return NotFound();
             }
-            return View(book);
+            //else {
+            //   await _context.Book.FindAsync(id);
+            //    return View();
+            //}
+            return View();
         }
         [HttpPost]
         public IActionResult Edit(int id, [Bind("BookId, Name,CategoryID,CourseCodeID,Editon,Description,MinimumBidePrice,BuyNowPrice,Message,Status")] Book book)

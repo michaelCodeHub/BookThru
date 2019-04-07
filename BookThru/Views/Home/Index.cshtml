@@ -37,9 +37,9 @@
                         @Html.DisplayFor(modelItem => item.PhoneNumber)
                     </td>
                     <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>|
-                        <a asp-action="EditRole" asp-route-id="@item.Id">Change Role</a>|
-                        <a asp-action="Block" asp-route-id="@item.Id">Block User</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>|*@
+                        
                     </td>
                 </tr>
             }
