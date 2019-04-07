@@ -8,13 +8,20 @@
     ViewData["Title"] = "Details";
     Model.ImageURL = "https://s3.amazonaws.com/wehire/" + Model.ImageURL;
     var expiryDate = Model.Uploaded.AddDays(7);
+    var upDate = Model.Uploaded.AddDays(7);
+
+    var expired = false;
+    if (@DateTime.Compare(expiryDate, DateTime.Now.Date) < 0)
+    {
+        expired = true;
+    }
 }
 
 <script>
     function myFunction() {
         var txt;
 
-        if (@DateTime.Compare(expiryDate,DateTime.Now.Date)< 0) {
+        if (@DateTime.Compare(expiryDate, DateTime.Now.Date)< 0) {
             if (@Model.CurrentBidder.Equals(User.Identity.Name)) {
             } else {
 
@@ -30,79 +37,107 @@
     window.myFunction();
 </script>
 
-@if (DateTime.Compare(expiryDate, DateTime.Now.Date) > 0)
+
+<br />
+<br />
+<script>
+    // Set the date we're counting down to
+var countDownDate = new Date("@expiryDate").getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+        // Get todays date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display the result in the element with id="demo"
+        document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s ";
+
+        // If the count down is finished, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "EXPIRED";
+            
+        }
+    }, 1000);
+</script>
+
+
+@if (!expired)
 {
-    <meta http-equiv="refresh" content="20" />
+    <meta http-equiv="refresh" content="10" />
 }
-
-@*<div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <!-- Indicators -->
-    <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-    </ol>
-
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner" style="height:200px;">
-        <div class="item active">
-            <img src="~/images/slider1.jpg" alt="" class="">
-        </div>
-
-        <div class="item">
-            <img src="~/images/slider2.jpg" alt="">
-        </div>
-
-        <div class="item">
-            <img src="~/images/slider3.jpg" alt="">
-        </div>
-    </div>
-</div>*@
 
 <div class="container">
 
+    <h3>@Model.Name - @Model.Editon Edition</h3>
+    <p>@Model.Category.Title | @Model.CourseCode.Code</p>
+
+
+
     @*<div class="searchBoxDiv">
-        <input class="searchBox" type="text" style="width:100%;" placeholder="Search a Book" />
-    </div>*@
+            <input class="searchBox" type="text" style="width:100%;" placeholder="Search a Book" />
+        </div>*@
 
     <div class="row">
         <div class="col-md-6">
             <img class="img-responsive" src="@Model.ImageURL" style="width:100%" />
         </div>
         <div class="col-md-6">
-            <h3>@Model.Name - @Model.Editon Edition</h3>
-            <p>@Model.Category.Title | @Model.CourseCode.Code</p>
             <p>Uploaded on : @Model.Uploaded</p>
             <p><b>Description:</b></p>
             <p>@Model.Description</p>
 
 
-            @if (DateTime.Compare(expiryDate, DateTime.Now.Date) > 0)
+            @if (!expired)
             {
-                <p>Current Bid : $@Model.MinimumBidPrice</p>
+
+                @if (Model.CurrentBidder.Equals(User.Identity.Name))
+                {
+                    <p>Current Bid : $@Model.MinimumBidPrice <span style="color:red">By You</span> </p>
+                }
+                else
+                {
+                    <p>Current Bid : $@Model.MinimumBidPrice </p>
+                }
+                <p>Expires In: </p><p id="demo"></p>
+
                 <p>Buy Now : $@Model.BuyNowPrice</p>
                 <p style="color:red">@Model.Message</p>
-                <form asp-action="MakeBid">
-                    <input type="hidden" asp-for="BookId" />
-                    <p><input type="text" placeholder="Type your bid amount" name="Amount" required /></p>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
-                                <input class="btn btn-primary" style="height:100px; width:100%; margin:0px auto;text-align: center;background-color:aqua; vertical-align: middle;display: table-cell; color:white; font-size:30px;" type="submit" value="Bid" />
+
+                @if (!Model.CurrentBidder.Equals(User.Identity.Name))
+                {
+                    <form asp-action="MakeBid">
+                        <input type="hidden" asp-for="BookId" />
+                        <p><input type="text" placeholder="Type your bid amount" name="Amount" required /></p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                                    <input class="btn btn-primary" style="height:100px; width:100%; margin:0px auto;text-align: center;background-color:aqua; vertical-align: middle;display: table-cell; color:white; font-size:30px;" type="submit" value="Bid" />
+                                </div>
                             </div>
+                            @*<div class="col-md-6">
+                            <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
+                                <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BUY</p>
+                            </div>
+                        </div>*@
                         </div>
-                        @*<div class="col-md-6">
-                        <div style="height:100px;background-color:aqua;margin:10px 10px 10px 0px;border-radius:2px;width:100%;display:table">
-                            <p style="text-align: center;vertical-align: middle;display: table-cell; color:white; font-size:30px;">BUY</p>
-                        </div>
-                    </div>*@
-                    </div>
-                </form>
+                    </form>
+                }
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h3>Buy Now</h3>
-                        <form action="/Books/PaymentSuccess" method="POST">
+                        <form action="/Books/charge" method="POST">
                             <article>
                                 <label>Total: $@Model.BuyNowPrice</label>
                             </article>
@@ -116,7 +151,6 @@
                         </form>
                     </div>
                 </div>
-                <p>Bid closes on : @expiryDate</p>
             }
             else
             {
@@ -125,7 +159,7 @@
                     <h3>You got the book!!!!!</h3>
 
 
-                    <form action="/Books/PaymentSuccess" method="POST">
+                    <form action="/Books/charge" method="POST">
                         <article>
                             <label>Total: $@Model.MinimumBidPrice</label>
                         </article>
@@ -137,13 +171,18 @@
                                 data-amount="$@Model.MinimumBidPrice">
                         </script>
                     </form>
+
+                    <form action="/Books/Messages" method="GET">
+                        <input type="hidden" value="@Model.Id" name="id" />
+                        <input type="submit" value="Send owner a Message" />
+                    </form>
                 }
                 else
                 {
                     <h3>Book Sold</h3>
                     <p>Subscribe to know if the same book added</p>
-                    <input type="text" placeholder="Email" name="Email"/>
-                    <input type="submit" name="Submit" value="Submit"/>
+                    <input type="text" placeholder="Email" name="Email" />
+                    <input type="submit" name="Submit" value="Submit" />
                 }
             }
         </div>

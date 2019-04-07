@@ -27,5 +27,6 @@ namespace BookThru.Models
         public DbSet<BookThru.Models.UserInfo> UserInfo { get; set; }
         public DbSet<BookThru.Models.BookBid> BookBid { get; set; }
         public DbSet<BookThru.Models.Message> Message { get; set; }
+        public DbSet<BookThru.Models.Contact> Contact { get; set; }
     }
 }

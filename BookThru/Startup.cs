@@ -54,6 +54,9 @@ namespace BookThru
             services.AddDbContext<BookThruContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("BookThruContext")));
 
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(1);//You can set Time
+            });
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
@@ -78,6 +81,7 @@ namespace BookThru
             }
 
             app.UseAuthentication();
+            app.UseSession();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

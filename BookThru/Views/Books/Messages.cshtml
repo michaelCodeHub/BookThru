@@ -2,30 +2,41 @@
 
 @{
     ViewData["Title"] = "Edit";
-    var x = "";
 }
-<meta http-equiv="refresh" content="10" />
-<h2>Edit</h2>
+@*<meta http-equiv="refresh" content="5" />*@
+<h2>Chat with @ViewBag.Name</h2>
 
 <div class="container">
     @foreach (var item in Model)
     {
-        if (item.FromId.Equals(User.Identity.Name))
+        if (item.FromId.Equals(ViewBag.Email))
         {
-
-            <p style="text-align:right">@item.FromId<br />@item.Content</p>
+            <div style="background-color:red;padding:5px;border-radius:4px;margin:5px;">
+                <p style="text-align:left;color:white">By @ViewBag.Name<br /><span style="font-size:24px">@item.Content</span></p>
+            </div>
         }
         else
         {
-            x = item.FromId;
-            <p style="text-align:left">@item.FromId<br />@item.Content</p>
+            <div style="background-color:green;padding:5px;border-radius:4px;margin:5px;">
+                <p style="text-align:right;color:white;">By You<br /><span style="font-size:24px">@item.Content</span></p>
+            </div>
         }
     }
 </div>
+<br />
+<br />
 <div class="container">
-    <form asp-action="Messages" method="post">
-        <input type="text" name="message"/>
-        <input type="hidden" name="toid" value="@x"/>
-        <input type="submit" value="Send"/>
-    </form>
+    <div style="
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 80%;
+  margin-left:10%">
+
+        <form asp-action="Messages" method="post" style="width:100%">
+            <input type="text" name="message" class="col-lg-10" style="height:40px;" />
+            <input type="hidden" name="toid" value="@ViewBag.Email" />
+            <input type="submit" value="Send" class="col-lg-2" style="height:40px;" />
+        </form>
+    </div>
 </div>

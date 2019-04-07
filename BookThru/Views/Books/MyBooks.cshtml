@@ -1,0 +1,15 @@
+﻿@model BookThru.Models.MyBook
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="container">
+
+    <h3>Books You Bought</h3>
+
+    @Html.Partial("~/Views/Books/Partial.cshtml", Model.Bought)
+
+    <h3>Books You sold</h3>
+
+    @Html.Partial("~/Views/Books/Partial.cshtml", Model.Sold)
+</div>

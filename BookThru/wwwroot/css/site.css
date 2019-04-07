@@ -103,3 +103,45 @@ body {
     border-color:aqua;
     padding:10px;
 }
+
+.searchButton {
+    height: 40px;
+}
+/*Login*/
+.videoTitle {
+    color: #212121;
+    text-transform: uppercase;
+}
+
+.subTitle {
+    color: lightslategrey;
+}
+
+h2 {
+    text-align: center;
+}
+
+.BoldText {
+    font-weight: 700;
+}
+
+.LightText {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+}
+
+.marginTopBottom {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    color: #074b7a;
+    border-color: #074b7a;
+    width: 49%;
+}
+
+    .btn:hover {
+        background-color: #074b7a;
+        color: white;
+    }

@@ -9,6 +9,7 @@
     <PackageReference Include="AWSSDK" Version="2.3.55.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="PusherServer" Version="4.1.0" />
     <PackageReference Include="SendGrid" Version="9.10.0" />
@@ -20,10 +21,13 @@
     <Content Update="Areas\Identity\Pages\Account\Waiting.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Books\Search.cshtml">
+    <Content Update="Views\Books\Partial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Books\PaymentSuccess.cshtml">
+    <Content Update="Views\Books\MyBooks.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Books\Search.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Books\Messages.cshtml">

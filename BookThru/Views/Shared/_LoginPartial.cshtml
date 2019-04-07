@@ -18,6 +18,8 @@
                     Manage
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a asp-action="MyBooks" asp-controller="Books" class="dropdown-item" style="margin:10px;text-transform:capitalize;" title="Manage">My Books</a>
+                    <div class="dropdown-divider"></div>
                     <a asp-area="Identity" asp-page="/Account/Manage/Index" class="dropdown-item" style="margin:10px;text-transform:capitalize;" title="Manage">EDIT PROFILE</a>
                     <div class="dropdown-divider"></div>
                     <button type="submit" class="dropdown-item" style="margin:10px; background-color:white; text-decoration:none">Logout</button>
